@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Node Blockchain</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <form>
+      <fieldset>
+        <legend>Sign File</legend>
+        <p>
+          <label>File: </label>
+          <input id="sign-file" type="file" required />
+        </p>
+        <input id="sign" type="submit" value="Sign" />
+      </fieldset>
+    </form>
+
+    <form style="margin-top: 50px">
+      <fieldset>
+        <legend>Verify File</legend>
+        <p>
+          <label>File: </label>
+          <input id="verify-file" type="file" required />
+        </p>
+        <input id="verify" type="submit" value="Verify" />
+        <p id="verify-block-hash" style="margin-top: 25px">Block hash: xxx</p>
+        <p id="verify-file-hash" style="margin-bottom: 5px">File hash: xxx</p>
+      </fieldset>
+    </form>
+
+    <script>
+      const signFileInput = document.getElementById('sign-file');
+      const signBtn = document.getElementById('sign');
+      const verifyFileInput = document.getElementById('verify-file');
+      const verifyBtn = document.getElementById('verify');
+      const verifyBlockHash = document.getElementById('verify-block-hash');
+      const verifyFileHash = document.getElementById('verify-file-hash');
+
+      signBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (!signFileInput.files[0]) return;
+
+        signFileInput.disabled = true;
+        signBtn.disabled = true;
+        signBtn.value = 'Signing..';
+
+        const formData = new FormData();
+        formData.append('file', signFileInput.files[0]);
+
+        try {
+          const res = await axios.post('/sign', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+
+          console.log(res.data);
+          alert(`File signed`);
+        } catch (error) {}
+
+        signFileInput.disabled = false;
+        signBtn.disabled = false;
+        signBtn.value = 'Sign';
+      });
+
+      verifyBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (!verifyFileInput.files[0]) return;
+
+        verifyFileInput.disabled = true;
+        verifyBtn.disabled = true;
+        verifyBtn.value = 'Verifying..';
+
+        const formData = new FormData();
+        formData.append('file', verifyFileInput.files[0]);
+
+        try {
+          const res = await axios.post('/verify', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+
+          console.log(res.data);
+          if (res.data) {
+            const hash = res.data.hash;
+            const newHash = 'ABC' + hash.slice(3);
+
+            verifyBlockHash.innerText = `Block hash: ${newHash}`;
+            verifyFileHash.innerText = `File hash: ${res.data.cid}`;
+            alert('Verified');
+          } else {
+            verifyBlockHash.innerText = 'Block hash: xxx';
+            verifyFileHash.innerText = 'File hash: xxx';
+            alert('Not verified');
+          }
+        } catch (error) {}
+
+        verifyFileInput.disabled = false;
+        verifyBtn.disabled = false;
+        verifyBtn.value = 'Verify';
+      });
+    </script>
+  </body>
+</html>

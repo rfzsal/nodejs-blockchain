@@ -1,0 +1,27 @@
+{
+  "name": "blockchain",
+  "version": "1.0.0",
+  "description": "Node JS Blockchain + IPFS",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm start",
+    "dev": "npx nodemon index"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.3.2"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "formidable": "^1.2.2",
+    "ipfs": "^0.58.3",
+    "nodemon": "^2.0.12"
+  }
+}
